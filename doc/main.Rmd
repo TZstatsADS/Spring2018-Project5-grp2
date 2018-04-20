@@ -1,0 +1,53 @@
+---
+title: "Project 5 - Breast Cancer Classification"
+author: "Group 2"
+date: "4/25/2018"
+output:
+  html_notebook: default
+  pdf_document: default
+---
+## Table of Contents  
+[Introduction](#Intro)  
+[Step 0: Load Packages & Specify Directories](#Step0)  
+[Step 1: Load and Process Data](#Step1)  
+[Step 2: Feature Selection](#Step2)  
+[Step 3: Implement Algorithm](#Step3)  
+[Step 4: Evaluation](#Step3)  
+
+### Introduction {#Intro}   
+
+### Step 0: Load Packages & Specify Directories {#Step0}  
+```{r}
+
+# Packages that will be used
+packages.used <- c("PerformanceAnalytics", "ggplot2")
+# Check packages that need to be installed
+packages.needed <- setdiff(packages.used, 
+                           intersect(installed.packages()[,1], 
+                                     packages.used))
+# Install additional packages
+if(length(packages.needed)>0){
+  install.packages(packages.needed, dependencies = TRUE,
+                   repos='http://cran.us.r-project.org')
+}
+# Load libraries  
+library("PerformanceAnalytics")
+library("ggplot2")
+
+# Set working directory to the doc folder 
+#setwd("~/GitHub/Spring2018-Project5-grp_2/doc")
+```
+
+
+### Step 1: Load and Process Data {#Step1}  
+### Step 2: Feature Selection {#Step2}
+### Step 3: Implement Algorithm  {#Step3}  
+#### algorithms {.tabset}  
+##### Random Forest    
+##### Logistic Regression  
+##### GBM  
+##### XGBoost  
+##### AdaBoost  
+##### SVM    
+
+### Step 4: Evaluation  {#Step4} 
