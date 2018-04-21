@@ -34,7 +34,7 @@ library("PerformanceAnalytics")
 library("ggplot2")
 
 # Set working directory to the doc folder 
-#setwd("~/GitHub/Spring2018-Project5-grp_2/doc")
+setwd("~/GitHub/Spring2018-Project5-grp_2/doc")
 ```
 
 ### Step 1: Load and Process Data {#Step1}  
@@ -78,11 +78,12 @@ summary(df)
 
 #### Process Data  
 ```{r}
-# Delete last column from dataset as its entries are all NA's
-df <- df[,-1]
+# Delete first column from dataset because it has no use,and delete last column from dataset as its entries are all NA's
+df <- df[,-c(1,33)]
 
 # Factorize the diagnosis attribute
 df$diagnosis <- factor(ifelse(df$diagnosis=="B","Benign","Malignant"))
+df$diagnosis <- as.integer(df$diagnosis)-1   #M=1 B=0
 
 # Split entire data into 80% train set and 20% test set
 set.seed(123)
