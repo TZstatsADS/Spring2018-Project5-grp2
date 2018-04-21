@@ -44,9 +44,9 @@ df <- read.csv("../data/data.csv", header = TRUE, stringsAsFactors = FALSE)
 ```
 #### Explore Data {.tabset}
 **Attribute Information:**  
-1) ID number  
-2) Diagnosis (M = malignant, B = benign)   
-3-32) Ten real-valued features described as follows are computed for each cell nucleus:  
+1. ID number  
+2. Diagnosis (M = malignant, B = benign)   
+3-32. Ten real-valued features described as follows are computed for each cell nucleus:  
 
 a) radius (mean of distances from center to points on the perimeter)  
 b) texture (standard deviation of gray-scale values)  
@@ -61,7 +61,7 @@ j) fractal dimension ("coastline approximation" - 1)
 
 The mean, standard error and "worst" or largest (mean of the three largest values) of these features were computed for each image, resulting in 30 features. For instance, field 3 is Mean Radius, field 13 is Radius SE, field 23 is Worst Radius.   
 
-33) All entries are NA's   
+33. All entries are NA's   
 
 ##### Head  
 ```{r}
