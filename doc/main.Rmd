@@ -19,7 +19,7 @@ output:
 ### Step 0: Load Packages & Specify Directories {#Step0}  
 ```{r}
 # Packages that will be used
-packages.used <- c("PerformanceAnalytics", "ggplot2")
+packages.used <- c("corrplot", "caret", "randomForest")
 # Check packages that need to be installed
 packages.needed <- setdiff(packages.used, 
                            intersect(installed.packages()[,1], 
@@ -30,8 +30,9 @@ if(length(packages.needed)>0){
                    repos='http://cran.us.r-project.org')
 }
 # Load libraries  
-library("PerformanceAnalytics")
-library("ggplot2")
+library("corrplot")
+library("caret")
+library("randomForest")
 
 # Set working directory to the doc folder 
 setwd("~/GitHub/Spring2018-Project5-grp_2/doc")
@@ -40,10 +41,11 @@ setwd("~/GitHub/Spring2018-Project5-grp_2/doc")
 ### Step 1: Load and Process Data {#Step1}  
 #### Load Data
 ```{r}
+# Load data
 df <- read.csv("../data/data.csv", header = TRUE, stringsAsFactors = FALSE)
 ```
 #### Explore Data {.tabset}
-**Attribute Information:**  
+##### Attribute Information  
 1. ID number  
 2. Diagnosis (M = malignant, B = benign)   
 3-32. Ten real-valued features described as follows are computed for each cell nucleus:  
@@ -64,13 +66,10 @@ df <- read.csv("../data/data.csv", header = TRUE, stringsAsFactors = FALSE)
 
 ##### Head  
 ```{r}
+# Print the head of data
 head(df)
 ```
 
-##### Structure  
-```{r}
-str(df)
-```
 ##### Summary
 ```{r}
 summary(df)
@@ -78,12 +77,12 @@ summary(df)
 
 #### Process Data  
 ```{r}
-# Delete first column from dataset because it has no use,and delete last column from dataset as its entries are all NA's
+# Delete the first column from dataset as id won't be used, and delete last column from dataset as its entries are all NA's
 df <- df[,-c(1,33)]
 
 # Factorize the diagnosis attribute
-df$diagnosis <- factor(ifelse(df$diagnosis=="B","Benign","Malignant"))
-df$diagnosis <- as.integer(df$diagnosis)-1   #M=1 B=0
+df$diagnosis <- factor(df$diagnosis)
+#df$diagnosis <- as.integer(df$diagnosis)-1   # M=1 B=0
 
 # Split entire data into 80% train set and 20% test set
 set.seed(123)
@@ -96,8 +95,63 @@ df.test <- df[-index,]
 #prop.table(table(df.test$diagnosis))
 ```
 
-### Step 2: Feature Selection {#Step2}
- 
+### Step 2: Feature Selection {#Step2}  
+```{r}
+#library(corrplot)
+corr_mat <- cor(df.train[,2:ncol(df)])
+corrplot(corr_mat, method = "square", order = "hclust",
+         # adjust the color, size and rotation degree of the text label
+         tl.col = "black", tl.cex = 0.6, tl.srt = 45, 
+         # adjust the color, format, size of the corrlation display
+         addCoef.col = "black", addCoefasPercent = TRUE, number.cex=0.45,
+         addrect = 14)
+```
+texture_mean, **texture_worst**  
+**area_se**, radius_se, perimeter_se  
+area_mean, radius_mean, perimeter_mean, area_worst, radius_worst, **perimeter_worst**  
+**concave.points_worst**, concavity_mean, concave.points_mean
+compactness_mean, compactness_worst, **concavity_worst**   
+compactness_se, **fractal_dimension_se**  
+**concavity_se**, concave.points_se  
+**texture_se**  
+**smoothness_se**  
+smoothness_mean, **smoothness_worst**  
+fractal_dimension_mean, **fractal_dimension_worst**  
+**symmetry_se**  
+**symmetry_mean**   
+**symmetry_worst**   
+```{r}
+control <- trainControl(method = "repeatedcv", number = 5, repeats = 3)
+model <- train(factor(diagnosis)~., data=df.train, method="rf", preProcess="scale", trControl=control)
+importance <- varImp(model, scale=FALSE)
+plot(importance)
+```
+
+```{r}
+feature_selected <- c("texture_worst", "area_se", "perimeter_worst", 
+                      "concave.points_worst", "concavity_worst", "fractal_dimension_se",
+                      "concavity_se", "texture_se", "smoothness_se", 
+                      "smoothness_worst", "fractal_dimension_worst", "symmetry_se", 
+                      "symmetry_mean", "symmetry_worst")
+df.train <- df.train[,c("diagnosis",feature_selected)]
+```
+
+```{r}
+#library(caret)
+#library(randomForest)
+control <- rfeControl(functions=rfFuncs, method="cv", number=5)
+results <- rfe(df.train[,-1],factor(df.train[,1]),size=c(1:14),rfeControl=control)
+predictors(results)
+plot(results, type=c("g", "o"))
+```
+              
+```{r}
+feature_selected <- c("perimeter_worst", "concave.points_worst", "area_se",
+                      "concavity_worst", "texture_worst", "smoothness_worst",
+                      "symmetry_worst", "concavity_se", "fractal_dimension_worst", 
+                      "symmetry_mean", "fractal_dimension_se")
+df.train <- df.train[,c("diagnosis",feature_selected)]
+```
 
 ### Step 3: Implement Algorithm  {#Step3}  
 
