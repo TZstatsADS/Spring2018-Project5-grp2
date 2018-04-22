@@ -82,7 +82,7 @@ df <- df[,-c(1,33)]
 
 # Factorize the diagnosis attribute
 df$diagnosis <- factor(df$diagnosis)
-#df$diagnosis <- as.integer(df$diagnosis)-1   # M=1 B=0
+df$diagnosis <- as.integer(df$diagnosis)-1   # M=1 B=0
 
 # Split entire data into 80% train set and 20% test set
 set.seed(123)
@@ -162,7 +162,19 @@ df.test2 <- df.test[,c("diagnosis",feature_selected)]
 ##### Logistic Regression  
 ##### GBM  
 ##### XGBoost  
+```{r}
+run.xg <- TRUE
+
+source("../lib/xgboost.r")
+output_xg <- xgb(df.train,df.test,run.xg)
+```
 ##### AdaBoost  
+```{r}
+run.ada <- TRUE
+
+source("../lib/adaboost.r")
+output_ada <- adaboost(df.train,df.test,run.ada)
+```
 ##### SVM    
 
 ### Step 4: Evaluation  {#Step4} 
