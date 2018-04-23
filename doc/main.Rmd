@@ -158,7 +158,22 @@ df.test2 <- df.test[,c("diagnosis",feature_selected)]
 
 
 #### algorithms {.tabset}  
-##### Random Forest    
+##### Random Forest  
+```{r}
+run.rf <- TRUE
+source("../lib/rf.R")
+
+if(run.rf){
+  output_rf <- RF(df.train,df.test)
+  output2_rf <- RF(df.train2,df.test2)
+  
+  save(output_rf,file = "../output/output_rf.RData")
+  save(output2_rf,file = "../output/output2_rf.RData")
+}else{
+  load("../output/output_rf.RData")
+  load("../output/output2_rf.RData")
+}
+```
 ##### Logistic Regression
 ```{r}
 run.logi <- TRUE
@@ -189,5 +204,20 @@ source("../lib/adaboost.r")
 output_ada <- adaboost(df.train,df.test,run.ada)
 ```
 ##### SVM    
+```{r}
+run.svm <- TRUE
+source("../lib/svm.R")
 
+if(run.svm){
+  output_svm <- SVM(df.train,df.test)
+  output2_svm <- SVM(df.train2,df.test2)
+  
+  save(output_svm,file = "../output/output_svm.RData")
+  save(output2_svm,file = "../output/output2_svm.RData")
+}else{
+  load("../output/output_svm.RData")
+  load("../output/output2_svm.RData")
+}
+```
+```
 ### Step 4: Evaluation  {#Step4} 
