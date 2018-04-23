@@ -192,16 +192,34 @@ output_gbm <- gbmp(df.train,df.test,run.gbm)
 ##### XGBoost  
 ```{r}
 run.xg <- TRUE
-
 source("../lib/xgboost.r")
-output_xg <- xgb(df.train,df.test,run.xg)
+
+if(run.xg){
+  output_xg <- xgb(df.train,df.test)
+  output2_xg <- xgb(df.train2,df.test2)
+  
+  save(output_xg,file = "../output/output_xg.RData")
+  save(output2_xg,file = "../output/output2_xg.RData")
+}else{
+  load("../output/output_xg.RData")
+  load("../output/output2_xg.RData")
+}
 ```
 ##### AdaBoost  
 ```{r}
 run.ada <- TRUE
-
 source("../lib/adaboost.r")
-output_ada <- adaboost(df.train,df.test,run.ada)
+
+if(run.ada){
+  output_ada <- adaboost(df.train,df.test)
+  output2_ada <- adaboost(df.train2,df.test2)
+  
+  save(output_ada,file = "../output/output_ada.RData")
+  save(output2_ada,file = "../output/output2_ada.RData")
+}else{
+  load("../output/output_ada.RData")
+  load("../output/output2_ada.RData")
+}
 ```
 ##### SVM    
 ```{r}

@@ -1,17 +1,28 @@
+
+################################----Train the model with xgboost model----##############################
+
 xgb <- function(dat_train,dat_test,run.xg = FALSE,nrounds = 5000,early_stopping_round = 100,print_every_n = 100){
+  # Input--:dat_train:training data
+  #         dat_test :test data
+  #         nrounds  :number of rounds,with default 5000
+  #         early_stopping_round:early stopping criteria for 100 steps
+  #         print_every_n:the frequency of printing partial results is every 100 steps
+
+  # Step 0:library packages
   time1 <- Sys.time()
   library(xgboost)
   library(magrittr)
   library(dplyr)
   library(ggplot2)
 
-  dat_train=df.train
-  dat_test =df.test
-  ## create xgb.DMatrix objects for each trainand test set.
+  # Step 1: create xgb.DMatrix objects for each trainand test set.
   xgtrain <- xgb.DMatrix(as.matrix(dat_train %>% select(-diagnosis)), label = dat_train$diagnosis)
   xgtest  <- xgb.DMatrix(as.matrix(dat_test  %>% select(-diagnosis)), label = dat_test$diagnosis)
   
-  ## Set parameters: we start with eta = 0.012, subsample=0.8, max_depth=8, colsample_bytree=0.9 and min_child_weight=5.
+  # Step 2: Set parameters
+  # We will use a binary logistic objective function. The evaluation metric will be AUC.
+  # we start with eta = 0.012, subsample=0.8, max_depth=8, colsample_bytree=0.9 and min_child_weight=5.
+  
   params <- list("objective"        = "binary:logistic",
                  "eval_metric"      = "auc",
                  "eta"              = 0.012,
@@ -21,7 +32,7 @@ xgb <- function(dat_train,dat_test,run.xg = FALSE,nrounds = 5000,early_stopping_
                  "min_child_weight" = 5
   )
   
-  ## Train the model using cross validation with 5 folds.
+  #Step 3: Train the model using cross validation with 5 folds.
   model_xgb.cv <- xgb.cv(params = params,
                          data = xgtrain, 
                          maximize = TRUE,
@@ -46,7 +57,7 @@ xgb <- function(dat_train,dat_test,run.xg = FALSE,nrounds = 5000,early_stopping_
          scale = 1, width = 10, height = 10, units =c("in", "cm", "mm"),
          dpi = 300, limitsize = TRUE)
 
-  ## Train the model using xgboost model
+  #Step 4: Train the model using xgboost model
   model_xgb <- xgboost(params = params,
                        data = xgtrain, 
                        maximize = TRUE,
@@ -70,10 +81,9 @@ xgb <- function(dat_train,dat_test,run.xg = FALSE,nrounds = 5000,early_stopping_
          scale = 1, width = 10, height = 10, units =c("in", "cm", "mm"),
          dpi = 300, limitsize = TRUE)
   
-  ## Prediction
+  # Step 5: Prediction
   prediction_xg <- round(predict(object = model_xgb ,newdata = xgtest),0)
-  save(prediction_xg,file = "../output/prediction_xg.RData")
- 
+
   time2 <- Sys.time()
   return(list(prediction = prediction_xg,time <- time2 - time1))
   
