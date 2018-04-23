@@ -159,8 +159,21 @@ df.test2 <- df.test[,c("diagnosis",feature_selected)]
 
 #### algorithms {.tabset}  
 ##### Random Forest    
-##### Logistic Regression  
-##### GBM  
+##### Logistic Regression
+```{r}
+run.logi <- TRUE
+
+source("../lib/logi.r")
+output_logi <- logi(df.train,df.test,run.logi)
+```
+##### GBM
+```{r}
+run.gbm <- TRUE
+
+source("../lib/gbmp.r")
+output_gbm <- gbmp(df.train,df.test,run.gbm)
+```
+
 ##### XGBoost  
 ```{r}
 run.xg <- TRUE
