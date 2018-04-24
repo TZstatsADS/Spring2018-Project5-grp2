@@ -1,11 +1,8 @@
 ---
-title: "Project 5 - Breast Cancer Classification"
-author: "Group 2"
-date: "4/25/2018"
-output:
-  html_notebook: default
-  pdf_document: default
+title: "R Notebook"
+output: html_notebook
 ---
+
 ## Table of Contents  
 [Introduction](#Intro)  
 [Step 0: Load Packages & Specify Directories](#Step0)  
@@ -44,6 +41,7 @@ setwd("~/GitHub/Spring2018-Project5-grp_2/doc")
 # Load data
 df <- read.csv("../data/data.csv", header = TRUE, stringsAsFactors = FALSE)
 ```
+
 #### Explore Data {.tabset}
 ##### Attribute Information  
 1. ID number  
@@ -69,12 +67,10 @@ df <- read.csv("../data/data.csv", header = TRUE, stringsAsFactors = FALSE)
 # Print the head of data
 head(df)
 ```
-
 ##### Summary
 ```{r}
 summary(df)
 ```
-
 #### Process Data  
 ```{r}
 # Delete the first column from dataset as id won't be used, and delete last column from dataset as its entries are all NA's
@@ -94,7 +90,6 @@ df.test <- df[-index,]
 #prop.table(table(df.train$diagnosis))
 #prop.table(table(df.test$diagnosis))
 ```
-
 ### Step 2: Feature Selection {#Step2}  
 ```{r}
 #library(corrplot)
@@ -106,6 +101,7 @@ corrplot(corr_mat, method = "square", order = "hclust",
          addCoef.col = "black", addCoefasPercent = TRUE, number.cex=0.45,
          addrect = 14)
 ```
+
 texture_mean, **texture_worst**  
 **area_se**, radius_se, perimeter_se  
 area_mean, radius_mean, perimeter_mean, area_worst, radius_worst, **perimeter_worst**  
@@ -119,14 +115,13 @@ smoothness_mean, **smoothness_worst**
 fractal_dimension_mean, **fractal_dimension_worst**  
 **symmetry_se**  
 **symmetry_mean**   
-**symmetry_worst**   
+**symmetry_worst** 
 ```{r}
 control <- trainControl(method = "repeatedcv", number = 5, repeats = 3)
 model <- train(factor(diagnosis)~., data=df.train, method="rf", preProcess="scale", trControl=control)
 importance <- varImp(model, scale=FALSE)
 plot(importance)
 ```
-
 ```{r}
 feature_selected <- c("texture_worst", "area_se", "perimeter_worst", 
                       "concave.points_worst", "concavity_worst", "fractal_dimension_se",
@@ -156,7 +151,6 @@ df.test2 <- df.test[,c("diagnosis",feature_selected)]
 
 ### Step 3: Implement Algorithm  {#Step3}  
 
-
 #### algorithms {.tabset}  
 ##### Random Forest  
 ```{r}
@@ -174,6 +168,7 @@ if(run.rf){
   load("../output/output2_rf.RData")
 }
 ```
+
 ##### Logistic Regression
 ```{r}
 run.logi <- FALSE
@@ -190,6 +185,7 @@ if(run.logi){
   load("../output/output2_logi.RData")
 }
 ```
+
 ##### GBM
 ```{r}
 run.gbm <- FALSE
@@ -206,7 +202,6 @@ if(run.gbm){
   load("../output/output2_gbm.RData")
 }
 ```
-
 ##### XGBoost  
 ```{r}
 run.xg <- FALSE
@@ -239,7 +234,6 @@ if(run.ada){
   load("../output/output2_ada.RData")
 }
 ```
-
 ##### SVM    
 ```{r}
 run.svm <- FALSE
@@ -312,4 +306,3 @@ time_comparison <- matrix(time, nrow=2, byrow = TRUE,
                                             "XGBoost","AdaBoost","SVM")))
 round(time_comparison,2)
 ```
-
