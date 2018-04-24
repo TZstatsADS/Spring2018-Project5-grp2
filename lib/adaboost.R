@@ -27,6 +27,6 @@ adaboost <- function(dat_train,dat_test,run.ada = FALSE,iter = 70){
   prediction_ada <- predict(model_ada, dat_test[,-1])
 
   time2 <- Sys.time()
-  return(list(prediction = prediction_ada,time <- time2 - time1))
+  return(list(prediction = prediction_ada,time = time2 - time1))
   }
 
