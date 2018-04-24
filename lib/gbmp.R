@@ -44,5 +44,5 @@ gbmp <- function(df.train, df.test){
   
   time2 <- Sys.time()
   
-  return(list(prediction = prediction_gbm,time <- time2 - time1))
+  return(list(prediction = prediction_gbm,time = time2 - time1))
 }
