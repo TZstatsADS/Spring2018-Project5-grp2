@@ -177,16 +177,35 @@ if(run.rf){
 ##### Logistic Regression
 ```{r}
 run.logi <- TRUE
+source("../lib/logi01.r")
+source("../lib/logi02.r")
 
-source("../lib/logi.r")
-output_logi <- logi(df.train,df.test,run.logi)
+if(run.logi){
+  output_logi <- logi01(df.train, df.test)
+  output2_logi <- logi02(df.train2, df.test2)
+  
+  save(output_logi, file = "../output/output_logi.RData")
+  save(output2_logi, file = "../output/output2_logi.RData")
+}else{
+  load("../output/output_logi.RData")
+  load("../output/output2_logi.RData")
+}
 ```
 ##### GBM
 ```{r}
 run.gbm <- TRUE
-
 source("../lib/gbmp.r")
-output_gbm <- gbmp(df.train,df.test,run.gbm)
+
+if(run.gbm){
+  output_gbm <- gbmp(df.train, df.test)
+  output2_gbm <- gbmp(df.train2, df.test2)
+  
+  save(output_gbm, file = "../output/output_gbm.RData")
+  save(output2_gbm, file = "../output/output2_gbm.RData")
+}else{
+  load("../output/output_gbm.RData")
+  load("../output/output2_gbm.RData")
+}
 ```
 
 ##### XGBoost  

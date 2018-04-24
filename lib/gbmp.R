@@ -1,5 +1,11 @@
-gbmp <- function(df.train, df.test, run.gbm = FALSE){
+########----Train the model with gbm model----#########
+
+gbmp <- function(df.train, df.test){
   
+  # Input: df.train--training data
+  #        df.test--test data
+  
+  # Step 0: library packages
   time1 <- Sys.time()
   
   traindata <- df.train
@@ -7,6 +13,7 @@ gbmp <- function(df.train, df.test, run.gbm = FALSE){
   
   library(gbm)
   
+  # Step 1: use training data to do the cross validation and train the model
   n<-names(traindata)
 
   gbm.form <- as.formula(paste("diagnosis ~", 
@@ -22,8 +29,11 @@ gbmp <- function(df.train, df.test, run.gbm = FALSE){
               cv.folds = 5,
               n.cores = 1)
   
+  # In order to find the best number of trees to use for the prediction for the test data, we can use `gbm.perf` function. 
+  # This function returns the optimal number of trees for prediction.
   optimalTreeNumberPredictionCV = gbm.perf(gbmCV)
   
+  # Step 2: prediction
   gbmTest = predict(object = gbmCV,
                     newdata = testdata,
                     n.trees = optimalTreeNumberPredictionCV,
@@ -31,7 +41,6 @@ gbmp <- function(df.train, df.test, run.gbm = FALSE){
   
   prediction_gbm <- round(gbmTest,0)
   
-  #save(prediction_gbm,file = "../output/prediction_gbm.RData")
   
   time2 <- Sys.time()
   
