@@ -1,6 +1,6 @@
 ########----Train the model with logistic model----#########
 
-logi01 <- function(df.train, df.test){
+logi <- function(df.train, df.test){
   
   # Input: df.train--training data
   #        df.test--test data
@@ -15,7 +15,7 @@ logi01 <- function(df.train, df.test){
   model <- glm(diagnosis ~.,family=binomial(link='logit'),data=traindata)
   
   # Step 2 use the trained model to do the prediction
-  fitted.results <- predict(model,newdata=subset(testdata,select=c(seq(2,31, step=1))),
+  fitted.results <- predict(model,newdata=subset(testdata,select=c(seq(2,ncol(testdata), step=1))),
                             type='response')
   fitted.results <- ifelse(fitted.results > 0.5,1,0)
   

@@ -177,12 +177,11 @@ if(run.rf){
 ##### Logistic Regression
 ```{r}
 run.logi <- TRUE
-source("../lib/logi01.r")
-source("../lib/logi02.r")
+source("../lib/logi.R")
 
 if(run.logi){
-  output_logi <- logi01(df.train, df.test)
-  output2_logi <- logi02(df.train2, df.test2)
+  output_logi <- logi(df.train, df.test)
+  output2_logi <- logi(df.train2, df.test2)
   
   save(output_logi, file = "../output/output_logi.RData")
   save(output2_logi, file = "../output/output2_logi.RData")
