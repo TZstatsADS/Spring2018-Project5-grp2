@@ -9,7 +9,7 @@ SVM <- function(train,test){
   time1 <- Sys.time()
   # Step 1: train the model with training data 
   model_svm <- svm(x = train[,-1], y = train[,1],   
-                 kernel="radial", scale = F, type = "C-classification")
+                 kernel="radial", type = "C-classification")
   
   # Step 2:Prediction
   prediction_svm <- predict(model_svm,test[,-1])
