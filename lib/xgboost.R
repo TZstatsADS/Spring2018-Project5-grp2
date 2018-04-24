@@ -85,7 +85,7 @@ xgb <- function(dat_train,dat_test,run.xg = FALSE,nrounds = 5000,early_stopping_
   prediction_xg <- round(predict(object = model_xgb ,newdata = xgtest),0)
 
   time2 <- Sys.time()
-  return(list(prediction = prediction_xg,time <- time2 - time1))
+  return(list(prediction = prediction_xg,time = time2 - time1))
   
 }
 

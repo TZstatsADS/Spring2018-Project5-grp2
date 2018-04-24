@@ -447,9 +447,10 @@ output_gbm &lt;- gbmp(df.train,df.test,run.gbm)</code></pre>
 <h5>XGBoost</h5>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucnVuLnhnIDwtIFRSVUVcbnNvdXJjZShcIi4uL2xpYi94Z2Jvb3N0LnJcIilcbmlmKHJ1bi54Zyl7XG4gIG91dHB1dF94ZyA8LSB4Z2IoZGYudHJhaW4sZGYudGVzdClcbiAgb3V0cHV0Ml94ZyA8LSB4Z2IoZGYudHJhaW4yLGRmLnRlc3QyKVxuICBcbiAgc2F2ZShvdXRwdXRfeGcsZmlsZSA9IFwiLi4vb3V0cHV0L291dHB1dF94Zy5SRGF0YVwiKVxuICBzYXZlKG91dHB1dDJfeGcsZmlsZSA9IFwiLi4vb3V0cHV0L291dHB1dDJfeGcuUkRhdGFcIilcbn1lbHNle1xuICBsb2FkKFwiLi4vb3V0cHV0L291dHB1dF94Zy5SRGF0YVwiKVxuICBsb2FkKFwiLi4vb3V0cHV0L291dHB1dDJfeGcuUkRhdGFcIilcbn1cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucnVuLnhnIDwtIFRSVUVcbnNvdXJjZShcIi4uL2xpYi94Z2Jvb3N0LnJcIilcblxuaWYocnVuLnhnKXtcbiAgb3V0cHV0X3hnIDwtIHhnYihkZi50cmFpbixkZi50ZXN0KVxuICBvdXRwdXQyX3hnIDwtIHhnYihkZi50cmFpbjIsZGYudGVzdDIpXG4gIFxuICBzYXZlKG91dHB1dF94ZyxmaWxlID0gXCIuLi9vdXRwdXQvb3V0cHV0X3hnLlJEYXRhXCIpXG4gIHNhdmUob3V0cHV0Ml94ZyxmaWxlID0gXCIuLi9vdXRwdXQvb3V0cHV0Ml94Zy5SRGF0YVwiKVxufWVsc2V7XG4gIGxvYWQoXCIuLi9vdXRwdXQvb3V0cHV0X3hnLlJEYXRhXCIpXG4gIGxvYWQoXCIuLi9vdXRwdXQvb3V0cHV0Ml94Zy5SRGF0YVwiKVxufVxuYGBgIn0= -->
 <pre class="r"><code>run.xg &lt;- TRUE
 source(&quot;../lib/xgboost.r&quot;)
+
 if(run.xg){
   output_xg &lt;- xgb(df.train,df.test)
   output2_xg &lt;- xgb(df.train2,df.test2)
@@ -461,51 +462,6 @@ if(run.xg){
   load(&quot;../output/output2_xg.RData&quot;)
 }</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdXHR0cmFpbi1hdWM6MC45NzczMTYrMC4wMDUxNjhcdHRlc3QtYXVjOjAuOTUzNDUwKzAuMDA4OTg3IFxuTXVsdGlwbGUgZXZhbCBtZXRyaWNzIGFyZSBwcmVzZW50LiBXaWxsIHVzZSB0ZXN0X2F1YyBmb3IgZWFybHkgc3RvcHBpbmcuXG5XaWxsIHRyYWluIHVudGlsIHRlc3RfYXVjIGhhc24ndCBpbXByb3ZlZCBpbiAxMDAgcm91bmRzLlxuXG5bMTAxXVx0dHJhaW4tYXVjOjAuOTkzODY2KzAuMDAxNDkxXHR0ZXN0LWF1YzowLjk4ODAyMyswLjAwNDkzNyBcblsyMDFdXHR0cmFpbi1hdWM6MC45OTYwODQrMC4wMDEyNTZcdHRlc3QtYXVjOjAuOTg5OTg5KzAuMDA1NjQ1IFxuWzMwMV1cdHRyYWluLWF1YzowLjk5Njc0NSswLjAwMTMyMlx0dGVzdC1hdWM6MC45OTExOTkrMC4wMDU3NDAgXG5bNDAxXVx0dHJhaW4tYXVjOjAuOTk2NzcyKzAuMDAxMzM5XHR0ZXN0LWF1YzowLjk5MTYxNyswLjAwNTc5NyBcbls1MDFdXHR0cmFpbi1hdWM6MC45OTY2MzIrMC4wMDE0ODRcdHRlc3QtYXVjOjAuOTkyMTUxKzAuMDA1OTE2IFxuU3RvcHBpbmcuIEJlc3QgaXRlcmF0aW9uOlxuWzQ1Nl1cdHRyYWluLWF1YzowLjk5NjY4MiswLjAwMTQ0NVx0dGVzdC1hdWM6MC45OTIxNTErMC4wMDU5MTZcblxuWzFdXHR0cmFpbi1hdWM6MC45NzU1MjEgXG5XaWxsIHRyYWluIHVudGlsIHRyYWluX2F1YyBoYXNuJ3QgaW1wcm92ZWQgaW4gMTAwIHJvdW5kcy5cblxuWzEwMV1cdHRyYWluLWF1YzowLjk5MzYyMiBcblsyMDFdXHR0cmFpbi1hdWM6MC45OTYxNDAgXG5bMzAxXVx0dHJhaW4tYXVjOjAuOTk2Njk4IFxuWzQwMV1cdHRyYWluLWF1YzowLjk5NjkyNSBcblN0b3BwaW5nLiBCZXN0IGl0ZXJhdGlvbjpcbls0MDBdXHR0cmFpbi1hdWM6MC45OTY5MjVcblxuWzFdXHR0cmFpbi1hdWM6MC45NzQzOTkrMC4wMDc2ODBcdHRlc3QtYXVjOjAuOTYzMDMzKzAuMDEwMzk1IFxuTXVsdGlwbGUgZXZhbCBtZXRyaWNzIGFyZSBwcmVzZW50LiBXaWxsIHVzZSB0ZXN0X2F1YyBmb3IgZWFybHkgc3RvcHBpbmcuXG5XaWxsIHRyYWluIHVudGlsIHRlc3RfYXVjIGhhc24ndCBpbXByb3ZlZCBpbiAxMDAgcm91bmRzLlxuXG5bMTAxXVx0dHJhaW4tYXVjOjAuOTk0MjIwKzAuMDAwNTUxXHR0ZXN0LWF1YzowLjk4MzA3NiswLjAwNjc4NSBcblsyMDFdXHR0cmFpbi1hdWM6MC45OTU5NTkrMC4wMDA5MTFcdHRlc3QtYXVjOjAuOTg0ODU4KzAuMDA4MzYwIFxuWzMwMV1cdHRyYWluLWF1YzowLjk5NjgxNiswLjAwMDg2N1x0dGVzdC1hdWM6MC45ODY1ODUrMC4wMDg3MjUgXG5bNDAxXVx0dHJhaW4tYXVjOjAuOTk3MDIxKzAuMDAwOTAwXHR0ZXN0LWF1YzowLjk4Nzk4NCswLjAwODAwNyBcblN0b3BwaW5nLiBCZXN0IGl0ZXJhdGlvbjpcblszOTFdXHR0cmFpbi1hdWM6MC45OTcwMDkrMC4wMDA4NzRcdHRlc3QtYXVjOjAuOTg3OTg0KzAuMDA4MDA3XG5cblsxXVx0dHJhaW4tYXVjOjAuOTc4MTg0IFxuV2lsbCB0cmFpbiB1bnRpbCB0cmFpbl9hdWMgaGFzbid0IGltcHJvdmVkIGluIDEwMCByb3VuZHMuXG5cblsxMDFdXHR0cmFpbi1hdWM6MC45OTQ4NjEgXG5bMjAxXVx0dHJhaW4tYXVjOjAuOTk2MjY0IFxuWzMwMV1cdHRyYWluLWF1YzowLjk5NjczOSBcbls0MDFdXHR0cmFpbi1hdWM6MC45OTcyNTUgXG5bNTAxXVx0dHJhaW4tYXVjOjAuOTk3MzU4IFxuU3RvcHBpbmcuIEJlc3QgaXRlcmF0aW9uOlxuWzQ1Ml1cdHRyYWluLWF1YzowLjk5NzQ0MVxuIn0= -->
-<pre><code>[1] train-auc:0.977316+0.005168 test-auc:0.953450+0.008987 
-Multiple eval metrics are present. Will use test_auc for early stopping.
-Will train until test_auc hasn't improved in 100 rounds.
-
-[101]   train-auc:0.993866+0.001491 test-auc:0.988023+0.004937 
-[201]   train-auc:0.996084+0.001256 test-auc:0.989989+0.005645 
-[301]   train-auc:0.996745+0.001322 test-auc:0.991199+0.005740 
-[401]   train-auc:0.996772+0.001339 test-auc:0.991617+0.005797 
-[501]   train-auc:0.996632+0.001484 test-auc:0.992151+0.005916 
-Stopping. Best iteration:
-[456]   train-auc:0.996682+0.001445 test-auc:0.992151+0.005916
-
-[1] train-auc:0.975521 
-Will train until train_auc hasn't improved in 100 rounds.
-
-[101]   train-auc:0.993622 
-[201]   train-auc:0.996140 
-[301]   train-auc:0.996698 
-[401]   train-auc:0.996925 
-Stopping. Best iteration:
-[400]   train-auc:0.996925
-
-[1] train-auc:0.974399+0.007680 test-auc:0.963033+0.010395 
-Multiple eval metrics are present. Will use test_auc for early stopping.
-Will train until test_auc hasn't improved in 100 rounds.
-
-[101]   train-auc:0.994220+0.000551 test-auc:0.983076+0.006785 
-[201]   train-auc:0.995959+0.000911 test-auc:0.984858+0.008360 
-[301]   train-auc:0.996816+0.000867 test-auc:0.986585+0.008725 
-[401]   train-auc:0.997021+0.000900 test-auc:0.987984+0.008007 
-Stopping. Best iteration:
-[391]   train-auc:0.997009+0.000874 test-auc:0.987984+0.008007
-
-[1] train-auc:0.978184 
-Will train until train_auc hasn't improved in 100 rounds.
-
-[101]   train-auc:0.994861 
-[201]   train-auc:0.996264 
-[301]   train-auc:0.996739 
-[401]   train-auc:0.997255 
-[501]   train-auc:0.997358 
-Stopping. Best iteration:
-[452]   train-auc:0.997441</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -527,6 +483,9 @@ if(run.ada){
   load(&quot;../output/output2_ada.RData&quot;)
 }</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoicGFja2FnZSChrmFkYaGvIHdhcyBidWlsdCB1bmRlciBSIHZlcnNpb24gMy40LjRwYWNrYWdlIKGuY2FyZXShryB3YXMgYnVpbHQgdW5kZXIgUiB2ZXJzaW9uIDMuNC40TG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBsYXR0aWNlXG4ifQ== -->
+<pre><code>package 愼&lt;U+3E31&gt;愼&lt;U+3E65&gt;ada愼&lt;U+3E31&gt;愼&lt;U+3E66&gt; was built under R version 3.4.4package 愼&lt;U+3E31&gt;愼&lt;U+3E65&gt;caret愼&lt;U+3E31&gt;愼&lt;U+3E66&gt; was built under R version 3.4.4Loading required package: lattice</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
