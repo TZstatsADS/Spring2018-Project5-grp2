@@ -12,7 +12,7 @@ output:
 [Step 1: Load and Process Data](#Step1)  
 [Step 2: Feature Selection](#Step2)  
 [Step 3: Implement Algorithm](#Step3)  
-[Step 4: Evaluation](#Step3)  
+[Step 4: Evaluation](#Step4)  
 
 ### Introduction {#Intro}   
 
@@ -160,7 +160,7 @@ df.test2 <- df.test[,c("diagnosis",feature_selected)]
 #### algorithms {.tabset}  
 ##### Random Forest  
 ```{r}
-run.rf <- TRUE
+run.rf <- FALSE
 source("../lib/rf.R")
 
 if(run.rf){
@@ -176,7 +176,7 @@ if(run.rf){
 ```
 ##### Logistic Regression
 ```{r}
-run.logi <- TRUE
+run.logi <- FALSE
 source("../lib/logi.R")
 
 if(run.logi){
@@ -192,7 +192,7 @@ if(run.logi){
 ```
 ##### GBM
 ```{r}
-run.gbm <- TRUE
+run.gbm <- FALSE
 source("../lib/gbmp.r")
 
 if(run.gbm){
@@ -209,7 +209,7 @@ if(run.gbm){
 
 ##### XGBoost  
 ```{r}
-run.xg <- TRUE
+run.xg <- FALSE
 source("../lib/xgboost.r")
 
 if(run.xg){
@@ -225,7 +225,7 @@ if(run.xg){
 ```
 ##### AdaBoost  
 ```{r}
-run.ada <- TRUE
+run.ada <- FALSE
 source("../lib/adaboost.r")
 
 if(run.ada){
@@ -239,9 +239,10 @@ if(run.ada){
   load("../output/output2_ada.RData")
 }
 ```
+
 ##### SVM    
 ```{r}
-run.svm <- TRUE
+run.svm <- FALSE
 source("../lib/svm.R")
 
 if(run.svm){
@@ -255,5 +256,60 @@ if(run.svm){
   load("../output/output2_svm.RData")
 }
 ```
-```
+
 ### Step 4: Evaluation  {#Step4} 
+```{r}
+# compute confusion matrix
+cm_rf <- confusionMatrix(output_rf$prediction,df.test$diagnosis)
+cm_rf2 <- confusionMatrix(output2_rf$prediction,df.test$diagnosis)
+cm_logi <- confusionMatrix(output_logi$prediction,df.test$diagnosis)
+cm_logi2 <- confusionMatrix(output2_logi$prediction,df.test$diagnosis)
+cm_gbm <- confusionMatrix(output_gbm$prediction,df.test$diagnosis)
+cm_gbm2 <- confusionMatrix(output2_gbm$prediction,df.test$diagnosis)
+cm_xg <- confusionMatrix(output_xg$prediction,df.test$diagnosis)
+cm_xg2 <- confusionMatrix(output2_xg$prediction,df.test$diagnosis)
+cm_ada <- confusionMatrix(output_ada$prediction,df.test$diagnosis)
+cm_ada2 <- confusionMatrix(output2_ada$prediction,df.test$diagnosis)
+cm_svm <- confusionMatrix(output_svm$prediction,df.test$diagnosis)
+cm_svm2 <- confusionMatrix(output2_svm$prediction,df.test$diagnosis)
+
+# visualize result
+par(mfrow=c(4,3), cex.main=0.1)
+fourfoldplot(cm_rf$table, conf.level = 0, margin = 1,
+             main = paste0("Random Forest (", round(cm_rf$overall[1]*100), "%)"))
+fourfoldplot(cm_logi$table, conf.level = 0, margin = 1,
+             main = paste0("Logistic Regression (", round(cm_logi$overall[1]*100), "%)"))
+fourfoldplot(cm_gbm$table, conf.level = 0, margin = 1,
+             main = paste0("GBM (", round(cm_gbm$overall[1]*100), "%)"))
+fourfoldplot(cm_xg$table, conf.level = 0, margin = 1,
+             main = paste0("XGBoost (", round(cm_xg$overall[1]*100), "%)"))
+fourfoldplot(cm_ada$table, conf.level = 0, margin = 1,
+             main = paste0("AdaBoost (", round(cm_ada$overall[1]*100), "%)"))
+fourfoldplot(cm_svm$table, conf.level = 0, margin = 1,
+             main = paste0("SVM (", round(cm_svm$overall[1]*100), "%)"))
+
+
+fourfoldplot(cm_rf2$table, conf.level = 0, margin = 1,
+             main = paste0("Random Forest (", round(cm_rf2$overall[1]*100), "%)"))
+fourfoldplot(cm_logi2$table, conf.level = 0, margin = 1,
+             main = paste0("Logistic Regression (", round(cm_logi2$overall[1]*100), "%)"))
+fourfoldplot(cm_gbm2$table, conf.level = 0, margin = 1,
+             main = paste0("GBM (", round(cm_gbm2$overall[1]*100), "%)"))
+fourfoldplot(cm_xg2$table, conf.level = 0, margin = 1,
+             main = paste0("XGBoost (", round(cm_xg2$overall[1]*100), "%)"))
+fourfoldplot(cm_ada2$table, conf.level = 0, margin = 1,
+             main = paste0("AdaBoost (", round(cm_ada2$overall[1]*100), "%)"))
+fourfoldplot(cm_svm2$table, conf.level = 0, margin = 1,
+             main = paste0("SVM (", round(cm_svm2$overall[1]*100), "%)"))
+```
+
+```{r}
+time <- c(output_rf$time,output_logi$time,output_gbm$time,output_xg$time,output_ada$time,output_svm$time,
+          output2_rf$time,output2_logi$time,output2_gbm$time,output2_xg$time,output2_ada$time,output2_svm$time)
+time_comparison <- matrix(time, nrow=2, byrow = TRUE,
+                          dimnames = list(c("all_features","reduced_features"),
+                                          c("RandomForest","Logistic Regression","GBM",
+                                            "XGBoost","AdaBoost","SVM")))
+round(time_comparison,2)
+```
+
