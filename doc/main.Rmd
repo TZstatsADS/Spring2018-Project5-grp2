@@ -13,7 +13,9 @@ output: html_notebook
 [Step 4: Evaluation](#Step4)  
 
 ### Introduction {#Intro}   
-This notebook will examine different classification methods to classify whether the breast cancer is malignant or benign based on the features computed from a digitized image of a fine needle aspirate (FNA) of a breast mass. 
+This notebook will implement and examine different classification methods on the [Breast Cancer Wisconsin (Diagnostic) Data Set][1] to classify whether the breast cancer is malignant or benign based on the features computed from a digitized image of a fine needle aspirate (FNA) of a breast mass. 
+
+[1]: https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+%28Diagnostic%29
 
 ### Step 0: Load Packages & Specify Directories {#Step0}  
 ```{r}
@@ -41,7 +43,6 @@ setwd("~/GitHub/Spring2018-Project5-grp_2/doc")
 
 ### Step 1: Load and Process Data {#Step1}  
 #### Load Data  
-Data Source: [Breast Cancer Wisconsin (Diagnostic) Data Set](https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+%28Diagnostic%29)
 ```{r}
 # Load data
 df <- read.csv("../data/data.csv", header = TRUE, stringsAsFactors = FALSE)
@@ -83,11 +84,12 @@ summary(df)
 ```
 
 #### Process Data  
+We will clean up the dataset and then split the dataset into 80% train set and 20% test set. 
 ```{r}
 # Delete the first column from dataset as id won't be used, and delete last column from dataset as its entries are all NA's
 df <- df[,-c(1,33)]
 
-# Factorize the diagnosis attribute
+# Convert the diagnosis attribute
 df$diagnosis <- factor(df$diagnosis)
 df$diagnosis <- as.integer(df$diagnosis)-1   # M=1 B=0
 
@@ -102,6 +104,22 @@ df.test <- df[-index,]
 #prop.table(table(df.test$diagnosis))
 ```
 ### Step 2: Feature Selection {#Step2}  
+30 features are grouped into 14 groups based on their correlation, and one feature (the italicized feature) from each group is selected based on their importance. Then using recursive feature elimination with 5-fold cross validation, we have found that a subset of 11 features (the bolded) for best accuracy.  
+a) texture_mean, ***texture_worst***  
+b) ***area_se***, radius_se, perimeter_se  
+c) area_mean, radius_mean, perimeter_mean, area_worst, radius_worst, ***perimeter_worst***  
+d) ***concave.points_worst***, concavity_mean, concave.points_mean
+e) compactness_mean, compactness_worst, ***concavity_worst***   
+f) compactness_se, ***fractal_dimension_se***  
+g) ***concavity_se***, concave.points_se  
+h) *texture_se*  
+i) *smoothness_se*  
+j) smoothness_mean, ***smoothness_worst***  
+k) fractal_dimension_mean, ***fractal_dimension_worst***  
+l) *symmetry_se*  
+m) ***symmetry_mean***   
+n) ***symmetry_worst*** 
+
 ```{r}
 #library(corrplot)
 # Compute and plot corrlation matrix
@@ -112,22 +130,8 @@ corrplot(corr_mat, method = "square", order = "hclust",
          # adjust the color, format, size of the corrlation display
          addCoef.col = "black", addCoefasPercent = TRUE, number.cex=0.45,
          addrect = 14)
+
 ```
-30 features are grouped into 14 groups based on their correlation, and one feature from each group is selected based on their importance. 
-a) texture_mean, **texture_worst**  
-b) **area_se**, radius_se, perimeter_se  
-c) area_mean, radius_mean, perimeter_mean, area_worst, radius_worst, **perimeter_worst**  
-d) **concave.points_worst**, concavity_mean, concave.points_mean
-e) compactness_mean, compactness_worst, **concavity_worst**   
-f) compactness_se, **fractal_dimension_se**  
-g) **concavity_se**, concave.points_se  
-h) **texture_se**  
-i) **smoothness_se**  
-j) smoothness_mean, **smoothness_worst**  
-k) fractal_dimension_mean, **fractal_dimension_worst**  
-l) **symmetry_se**  
-m) **symmetry_mean**   
-n) **symmetry_worst** 
 ```{r}
 # Compute importance of each feature
 control <- trainControl(method = "repeatedcv", number = 5, repeats = 3)
@@ -137,6 +141,7 @@ plot(importance)
 ```
 
 ```{r}
+# define selected features
 feature_selected <- c("texture_worst", "area_se", "perimeter_worst", 
                       "concave.points_worst", "concavity_worst", "fractal_dimension_se",
                       "concavity_se", "texture_se", "smoothness_se", 
@@ -144,17 +149,19 @@ feature_selected <- c("texture_worst", "area_se", "perimeter_worst",
                       "symmetry_mean", "symmetry_worst")
 df.train2 <- df.train[,c("diagnosis",feature_selected)]
 ```
-
+ 
 ```{r}
+# recursive feature elimination to find a subset of features for best accuracy
 #library(caret)
 #library(randomForest)
 control <- rfeControl(functions=rfFuncs, method="cv", number=5)
 results <- rfe(df.train2[,-1],factor(df.train2[,1]),size=c(1:14),rfeControl=control)
 predictors(results)
-plot(results, type=c("g", "o"))
+#plot(results, type=c("g", "o"))
 ```
               
 ```{r}
+# redefine selected features 
 feature_selected <- c("perimeter_worst", "concave.points_worst", "area_se",
                       "concavity_worst", "texture_worst", "smoothness_worst",
                       "symmetry_worst", "concavity_se", "fractal_dimension_worst", 
@@ -164,8 +171,9 @@ df.test2 <- df.test[,c("diagnosis",feature_selected)]
 ```
 
 ### Step 3: Implement Algorithm  {#Step3}  
-
 #### algorithms {.tabset}  
+We have impletemented six different classification methods on both the full set of features and reduced set of features.   
+
 ##### Random Forest  
 ```{r}
 run.rf <- FALSE
@@ -265,7 +273,10 @@ if(run.svm){
 }
 ```
 
-### Step 4: Evaluation  {#Step4} 
+### Step 4: Evaluation  {#Step4}   
+We have compared the prediction accuracy and running time among the six classification methods with the two different sets of features, and have found that two best models are SVM with all features (100% prediction accuracy and 0.07s training time) and Logistic Regression with reduced features (98% prediction accuracy and 0.03s training time).   
+
+#### Accuracy  
 ```{r}
 # compute confusion matrix
 cm_rf <- confusionMatrix(output_rf$prediction,df.test$diagnosis)
@@ -281,37 +292,23 @@ cm_ada2 <- confusionMatrix(output2_ada$prediction,df.test$diagnosis)
 cm_svm <- confusionMatrix(output_svm$prediction,df.test$diagnosis)
 cm_svm2 <- confusionMatrix(output2_svm$prediction,df.test$diagnosis)
 
-# visualize result
-par(mfrow=c(4,3), cex.main=0.1)
-fourfoldplot(cm_rf$table, conf.level = 0, margin = 1,
-             main = paste0("Random Forest (", round(cm_rf$overall[1]*100), "%)"))
-fourfoldplot(cm_logi$table, conf.level = 0, margin = 1,
-             main = paste0("Logistic Regression (", round(cm_logi$overall[1]*100), "%)"))
-fourfoldplot(cm_gbm$table, conf.level = 0, margin = 1,
-             main = paste0("GBM (", round(cm_gbm$overall[1]*100), "%)"))
-fourfoldplot(cm_xg$table, conf.level = 0, margin = 1,
-             main = paste0("XGBoost (", round(cm_xg$overall[1]*100), "%)"))
-fourfoldplot(cm_ada$table, conf.level = 0, margin = 1,
-             main = paste0("AdaBoost (", round(cm_ada$overall[1]*100), "%)"))
-fourfoldplot(cm_svm$table, conf.level = 0, margin = 1,
-             main = paste0("SVM (", round(cm_svm$overall[1]*100), "%)"))
+# compare prediction accuracy 
+accuracy <- c(cm_rf$overall[1],cm_logi$overall[1],cm_gbm$overall[1],
+              cm_xg$overall[1],cm_ada$overall[1],cm_svm$overall[1],
+              cm_rf2$overall[1],cm_logi2$overall[1],cm_gbm2$overall[1],
+              cm_xg2$overall[1],cm_ada2$overall[1],cm_svm2$overall[1])
+accuracy_comparison <- matrix(accuracy, nrow = 2, byrow = TRUE,
+                              dimnames = list(c("all_features","reduced_features"),
+                                              c("RandomForest","Logistic Regression","GBM",
+                                                 "XGBoost","AdaBoost","SVM")))
+round(accuracy_comparison,4)
 
 
-fourfoldplot(cm_rf2$table, conf.level = 0, margin = 1,
-             main = paste0("Random Forest (", round(cm_rf2$overall[1]*100), "%)"))
-fourfoldplot(cm_logi2$table, conf.level = 0, margin = 1,
-             main = paste0("Logistic Regression (", round(cm_logi2$overall[1]*100), "%)"))
-fourfoldplot(cm_gbm2$table, conf.level = 0, margin = 1,
-             main = paste0("GBM (", round(cm_gbm2$overall[1]*100), "%)"))
-fourfoldplot(cm_xg2$table, conf.level = 0, margin = 1,
-             main = paste0("XGBoost (", round(cm_xg2$overall[1]*100), "%)"))
-fourfoldplot(cm_ada2$table, conf.level = 0, margin = 1,
-             main = paste0("AdaBoost (", round(cm_ada2$overall[1]*100), "%)"))
-fourfoldplot(cm_svm2$table, conf.level = 0, margin = 1,
-             main = paste0("SVM (", round(cm_svm2$overall[1]*100), "%)"))
 ```
 
+#### Running Time 
 ```{r}
+# compare time
 time <- c(output_rf$time,output_logi$time,output_gbm$time,output_xg$time,output_ada$time,output_svm$time,
           output2_rf$time,output2_logi$time,output2_gbm$time,output2_xg$time,output2_ada$time,output2_svm$time)
 time_comparison <- matrix(time, nrow=2, byrow = TRUE,
@@ -320,13 +317,13 @@ time_comparison <- matrix(time, nrow=2, byrow = TRUE,
                                             "XGBoost","AdaBoost","SVM")))
 round(time_comparison,2)
 ```
-
+#### Confustion Matrix of Best Models
 ```{r}
-accuracy <- c(cm_rf$overall[1],cm_logi$overall[1],cm_gbm$overall[1],
-              cm_xg$overall[1],cm_ada$overall[1],cm_svm$overall[1],
-              cm_rf2$overall[1],cm_logi2$overall[1],cm_gbm2$overall[1],
-              cm_xg2$overall[1],cm_ada2$overall[1],cm_svm2$overall[1])
-accuracy_comparison <- matrix(accuracy, nrow = 2, byrow = TRUE)
-round(accuracy_comparison,4)
+# visualize confusion matrix of two best models 
+par(mfrow=c(1,2))
+fourfoldplot(cm_logi2$table, conf.level = 0, margin = 1,
+             main = paste0("Logistic Regression (", round(cm_logi2$overall[1]*100), "%)"))
+fourfoldplot(cm_svm$table, conf.level = 0, margin = 1,
+             main = paste0("SVM (", round(cm_svm$overall[1]*100), "%)"))
 ```
 
