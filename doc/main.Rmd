@@ -1,5 +1,6 @@
 ---
-title: "R Notebook"
+title: "ADA Project 5 - Breast Cancer Classification"
+author: "Group 2"
 output: html_notebook
 ---
 
