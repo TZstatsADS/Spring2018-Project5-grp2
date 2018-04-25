@@ -3,7 +3,7 @@
 Term: Spring 2018
 
 + Team 2
-+ Projec title: Breast Cancer Classification  [Link to Report](./doc/main.Rmd)
++ Projec title: Breast Cancer Classification  [Link to Report](https://cdn.rawgit.com/TZstatsADS/Spring2018-Project5-grp_2/de766437/doc/main.nb.html)
 + Team members
 	+ Jiaqi Dong
 	+ Xiaochen Fan
