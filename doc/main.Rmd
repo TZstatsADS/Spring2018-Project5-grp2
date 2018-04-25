@@ -32,7 +32,8 @@ if(length(packages.needed)>0){
 library("corrplot")
 library("caret")
 library("randomForest")
-
+library("e1071")
+library("dplyr")
 # Set working directory to the doc folder 
 setwd("~/GitHub/Spring2018-Project5-grp_2/doc")
 ```

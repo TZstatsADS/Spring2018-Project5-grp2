@@ -5,9 +5,9 @@ RF <- function(train,test){
   #        test--test data
   
   # Step 0: library packages
-  library(randomForest)
-  library(caret)
-  library(e1071)
+  # library(randomForest)
+  # library(caret)
+  # library(e1071)
   time1 <- Sys.time()
   # Step 1: train the model with training data 
   model_rf <- randomForest(as.factor(train[,1]) ~ .,

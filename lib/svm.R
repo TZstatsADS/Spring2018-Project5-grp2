@@ -4,8 +4,8 @@ SVM <- function(train,test){
   #        test--test data
   
   # Step 0: library packages
-  library(e1071)
-  library(dplyr)
+  # library(e1071)
+  # library(dplyr)
   time1 <- Sys.time()
   # Step 1: train the model with training data 
   model_svm <- svm(x = train[,-1], y = train[,1],   
