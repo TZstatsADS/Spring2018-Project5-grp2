@@ -13,7 +13,7 @@ Term: Spring 2018
 	
 **Contribution statement**: 
 + Jiaqi Dong:
-+ Xiaochen Fan:
++ Xiaochen Fan: Constructed the gbm and logistic model and train based on train data, then predicted based on test data.
 + Wenyuan Gu:
 + Yiyi Zhang: Construced the Rnotebook and performed the data processing, feature selection and evaluation parts. 
 
