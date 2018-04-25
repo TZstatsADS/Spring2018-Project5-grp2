@@ -13,6 +13,7 @@ output: html_notebook
 [Step 4: Evaluation](#Step4)  
 
 ### Introduction {#Intro}   
+This notebook will examine different classification methods to classify whether the breast cancer is malignant or benign based on the features computed from a digitized image of a fine needle aspirate (FNA) of a breast mass. 
 
 ### Step 0: Load Packages & Specify Directories {#Step0}  
 ```{r}
@@ -37,41 +38,48 @@ setwd("~/GitHub/Spring2018-Project5-grp_2/doc")
 ```
 
 ### Step 1: Load and Process Data {#Step1}  
-#### Load Data
+#### Load Data  
+Data Source: [Breast Cancer Wisconsin (Diagnostic) Data Set](https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+%28Diagnostic%29)
 ```{r}
 # Load data
 df <- read.csv("../data/data.csv", header = TRUE, stringsAsFactors = FALSE)
 ```
 
 #### Explore Data {.tabset}
-##### Attribute Information  
-1. ID number  
-2. Diagnosis (M = malignant, B = benign)   
-3-32. Ten real-valued features described as follows are computed for each cell nucleus:  
-  a) radius (mean of distances from center to points on the perimeter)  
-  b) texture (standard deviation of gray-scale values)  
-  c) perimeter  
-  d) area  
-  e) smoothness (local variation in radius lengths)  
-  f) compactness (perimeter^2 / area - 1.0)  
-  g) concavity (severity of concave portions of the contour)  
-  h) concave points (number of concave portions of the contour)   
-  i) symmetry  
-  j) fractal dimension ("coastline approximation" - 1)   
-
-  The mean, standard error and "worst" or largest (mean of the three largest values) of these features   were computed for each image, resulting in 30 features. For instance, field 3 is Mean Radius, field    13 is Radius SE, field 23 is Worst Radius.   
-
-33. All entries are NA's   
-
 ##### Head  
 ```{r}
 # Print the head of data
 head(df)
 ```
+##### Structure  
+The dataset includes 569 observations of 33 variables described as below.  
+(1) ID number  
+(2) Diagnosis (M = malignant, B = benign)   
+(3)-(32) Ten real-valued features described as follows are computed for each cell nucleus:  
+    a) radius (mean of distances from center to points on the perimeter)  
+    b) texture (standard deviation of gray-scale values)  
+    c) perimeter  
+    d) area  
+    e) smoothness (local variation in radius lengths)  
+    f) compactness (perimeter^2 / area - 1.0)  
+    g) concavity (severity of concave portions of the contour)  
+    h) concave points (number of concave portions of the contour)   
+    i) symmetry   
+    j) fractal dimension ("coastline approximation" - 1)   
+
+The mean, standard error and "worst" or largest (mean of the three largest values) of these features   were computed for each image, resulting in 30 features. For instance, field 3 is Mean Radius, field 13 is Radius SE, field 23 is Worst Radius.   
+(33) All entries are NA's   
+
+```{r}
+# Strucutre of the dataset
+str(df)
+```
 ##### Summary
 ```{r}
+# Summary of the dataset
 summary(df)
 ```
+
 #### Process Data  
 ```{r}
 # Delete the first column from dataset as id won't be used, and delete last column from dataset as its entries are all NA's
@@ -94,6 +102,7 @@ df.test <- df[-index,]
 ### Step 2: Feature Selection {#Step2}  
 ```{r}
 #library(corrplot)
+# Compute and plot corrlation matrix
 corr_mat <- cor(df.train[,2:ncol(df)])
 corrplot(corr_mat, method = "square", order = "hclust",
          # adjust the color, size and rotation degree of the text label
@@ -102,27 +111,29 @@ corrplot(corr_mat, method = "square", order = "hclust",
          addCoef.col = "black", addCoefasPercent = TRUE, number.cex=0.45,
          addrect = 14)
 ```
-
-texture_mean, **texture_worst**  
-**area_se**, radius_se, perimeter_se  
-area_mean, radius_mean, perimeter_mean, area_worst, radius_worst, **perimeter_worst**  
-**concave.points_worst**, concavity_mean, concave.points_mean
-compactness_mean, compactness_worst, **concavity_worst**   
-compactness_se, **fractal_dimension_se**  
-**concavity_se**, concave.points_se  
-**texture_se**  
-**smoothness_se**  
-smoothness_mean, **smoothness_worst**  
-fractal_dimension_mean, **fractal_dimension_worst**  
-**symmetry_se**  
-**symmetry_mean**   
-**symmetry_worst** 
+30 features are grouped into 14 groups based on their correlation, and one feature from each group is selected based on their importance. 
+a) texture_mean, **texture_worst**  
+b) **area_se**, radius_se, perimeter_se  
+c) area_mean, radius_mean, perimeter_mean, area_worst, radius_worst, **perimeter_worst**  
+d) **concave.points_worst**, concavity_mean, concave.points_mean
+e) compactness_mean, compactness_worst, **concavity_worst**   
+f) compactness_se, **fractal_dimension_se**  
+g) **concavity_se**, concave.points_se  
+h) **texture_se**  
+i) **smoothness_se**  
+j) smoothness_mean, **smoothness_worst**  
+k) fractal_dimension_mean, **fractal_dimension_worst**  
+l) **symmetry_se**  
+m) **symmetry_mean**   
+n) **symmetry_worst** 
 ```{r}
+# Compute importance of each feature
 control <- trainControl(method = "repeatedcv", number = 5, repeats = 3)
 model <- train(factor(diagnosis)~., data=df.train, method="rf", preProcess="scale", trControl=control)
 importance <- varImp(model, scale=FALSE)
 plot(importance)
 ```
+
 ```{r}
 feature_selected <- c("texture_worst", "area_se", "perimeter_worst", 
                       "concave.points_worst", "concavity_worst", "fractal_dimension_se",
@@ -307,3 +318,13 @@ time_comparison <- matrix(time, nrow=2, byrow = TRUE,
                                             "XGBoost","AdaBoost","SVM")))
 round(time_comparison,2)
 ```
+
+```{r}
+accuracy <- c(cm_rf$overall[1],cm_logi$overall[1],cm_gbm$overall[1],
+              cm_xg$overall[1],cm_ada$overall[1],cm_svm$overall[1],
+              cm_rf2$overall[1],cm_logi2$overall[1],cm_gbm2$overall[1],
+              cm_xg2$overall[1],cm_ada2$overall[1],cm_svm2$overall[1])
+accuracy_comparison <- matrix(accuracy, nrow = 2, byrow = TRUE)
+round(accuracy_comparison,4)
+```
+
