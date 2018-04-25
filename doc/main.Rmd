@@ -18,7 +18,7 @@ This notebook will examine different classification methods to classify whether 
 ### Step 0: Load Packages & Specify Directories {#Step0}  
 ```{r}
 # Packages that will be used
-packages.used <- c("corrplot", "caret", "randomForest")
+packages.used <- c("corrplot", "caret", "randomForest", "e1071", "dplyr", "gbm")
 # Check packages that need to be installed
 packages.needed <- setdiff(packages.used, 
                            intersect(installed.packages()[,1], 
@@ -34,6 +34,7 @@ library("caret")
 library("randomForest")
 library("e1071")
 library("dplyr")
+library("gbm")
 # Set working directory to the doc folder 
 setwd("~/GitHub/Spring2018-Project5-grp_2/doc")
 ```
