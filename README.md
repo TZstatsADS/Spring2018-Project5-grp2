@@ -14,7 +14,7 @@ Term: Spring 2018
 **Contribution statement**: 
 + Jiaqi Dong: Constructed the svm and randomforest model and train based on train data, then predicted based on test data.
 + Xiaochen Fan: Constructed the gbm and logistic model and train based on train data, then predicted based on test data.
-+ Wenyuan Gu:
++ Wenyuan Gu: Constructed the xgboost and adaboost model and train based on train data, then predicted based on test data.
 + Yiyi Zhang: Construced the Rnotebook and performed the data processing, feature selection and evaluation parts. 
 
 Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
